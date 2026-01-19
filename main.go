@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"bufio"
+	"strings"
+	"strconv"
 )
 
 func main() {
@@ -32,7 +35,36 @@ func handleconnection(conn net.Conn) {
 
 	defer conn.Close()
 
-	// buffer to hold incoming data
+	reader := bufio.NewReader(conn)
+
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading from connection:", err)
+		return
+	}
+
+	line = strings.TrimSpace(line)
+	
+	if line[0] != '*' {
+		fmt.Println("Error: Not a valid RESP array")
+		return
+	}
+
+	count, err := strconv.Atoi(line[1:])
+	if err != nil {
+		fmt.Println("Error parsing array length:", err)
+		return
+	}
+
+	for(i := 0; i < count; ++i) {
+		
+
+
+	}
+
+	fmt.Println("Client sent a command with", count, "arguments")
+
+	/* // buffer to hold incoming data
 	buf := make([]byte, 1024)
 
 	//read data from the client
@@ -44,5 +76,5 @@ func handleconnection(conn net.Conn) {
 
 	//print the received data
 	receivedData := string(buf[:n])
-	fmt.Println("Received data:", receivedData)
+	fmt.Println("Received data:", receivedData) */
 }
